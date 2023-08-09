@@ -60,14 +60,3 @@ class FeatureBar(UserControl):
             )
         )
         return self.view
-
-# def text_field_focus(e):
-#     e.control.read_only = False
-#     e.control.border = "outline"
-#     e.control.update()
-#
-#
-# def text_field_blur(e):
-#     e.control.read_only = True
-#     e.control.border = "none"
-#     e.control.update()

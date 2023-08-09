@@ -20,6 +20,7 @@ from src.views.feature.extract_log import ExtractLog
 from src.views.feature.feature_bar import FeatureBar
 from src.views.search.img_list import ImgList
 from src.views.search.search_bar import SearchBar
+from src.views.setting.setting_view import SettingView
 from src.views.sidebar import Sidebar
 
 
@@ -77,7 +78,18 @@ class AppLayout(Row):
         )
 
         # 设置视图
-        self.setting_view = Text("待开发")
+        self.setting_view = Ref[Container]()
+        Container(
+            ref=self.setting_view,
+            expand=True,
+            padding=padding.only(0, 20, 0, 0),
+            content=Column(
+                expand=True,
+                controls=[
+                    SettingView(self.page, self)
+                ]
+            )
+        )
 
         # 提示对话框
         self.dialog = AlertDialog(
@@ -114,15 +126,11 @@ class AppLayout(Row):
     def set_feature_view(self):
         self.active_view = self.feature_view.current
         self.sidebar.nav_rail.selected_index = 1  # 导航栏选择索引为1
-        # self.sidebar.update()
-        # self.page.update()
 
     # 切换到设置视图
     def set_setting_view(self):
-        self.active_view = self.setting_view
+        self.active_view = self.setting_view.current
         self.sidebar.nav_rail.selected_index = 2  # 导航栏选择索引为1
-        # self.sidebar.update()
-        # self.page.update()
 
     # 提取特征按钮点击触发函数，开始提取特征，extract_log 显示日志
     def extract_feature(self, feature_bar: FeatureBar):
@@ -219,20 +227,3 @@ class AppLayout(Row):
 
         #  展示图片
         self.img_list.current.show_result_image(similar_img_list)
-
-# def main(page: Page):
-#     page.title = "Flet Trello clone"
-#     page.padding = 0
-#     # page.theme = theme.Theme(font_family="Verdana")
-#     # page.theme.page_transitions.windows = "cupertino"
-#     page.fonts = {"Pacifico": "Pacifico-Regular.ttf"}
-#     page.bgcolor = colors.BLUE_GREY_200
-#     app_layout = AppLayout(page, tight=False,
-#                            expand=False,
-#                            vertical_alignment="start")
-#     page.add(app_layout)
-#     page.update()
-#     # app.initialize()
-#
-#
-# flet.app(target=main, assets_dir="../assets")

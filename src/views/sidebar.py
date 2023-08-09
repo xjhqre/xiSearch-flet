@@ -15,6 +15,8 @@ from flet import (
 )
 from flet_core import alignment
 
+from src.constants import color_constant
+
 
 class Sidebar(UserControl):
 
@@ -27,13 +29,9 @@ class Sidebar(UserControl):
         # 导航栏选项
         self.nav_items = [
             NavigationRailDestination(
-                # 目的地的标签 Control。
-                # 与 NavigationRail 一起使用时必须提供标签。当label_type='none'时，标签仍然用于语义，并且如果extended为True，则仍然可以使用。
                 label_content=Text(
                     "图片搜索",
-                    font_family='微软雅黑'
                 ),
-                # 同上
                 label="图片搜索",
                 icon=icons.IMAGE_SEARCH,
                 selected_icon=icons.IMAGE_SEARCH,
@@ -42,16 +40,14 @@ class Sidebar(UserControl):
             NavigationRailDestination(
                 label_content=Text(
                     "特征提取",
-                    font_family='微软雅黑'
                 ),
                 label="特征提取",
                 icon=icons.FEATURED_PLAY_LIST,
-                selected_icon=icons.FEATURED_PLAY_LIST
+                selected_icon=icons.FEATURED_PLAY_LIST,
             ),
             NavigationRailDestination(
                 label_content=Text(
                     "设置",
-                    font_family='微软雅黑'
                 ),
                 label="设置",
                 icon=icons.SETTINGS,
@@ -68,8 +64,7 @@ class Sidebar(UserControl):
             destinations=self.nav_items,  # 导航栏选项
             extended=True,  # 设置内容横向扩展
             expand=True,  # 设置伸展，填充满父容器
-            # group_alignment=-1.0  # 垂直方向上的对齐，-1.0：顶部  0.0：中间  1.0：底部  默认-1.0
-            # height=110
+            bgcolor=color_constant.side_bar_color
         )
 
     def build(self):
@@ -83,7 +78,6 @@ class Sidebar(UserControl):
                 tight=False),
             width=200,
             expand=True,
-            bgcolor=colors.WHITE,
             alignment=alignment.center
         )
         return self.view

@@ -1,11 +1,9 @@
 """
 搜索栏
 """
-import time
 
-from flet_core import UserControl, Container, Row, MainAxisAlignment, CrossAxisAlignment, FilledButton, FilePicker, \
-    FilePickerResultEvent, icons, RoundedRectangleBorder, ButtonStyle, Ref, TextField, padding, margin, border, colors, \
-    ElevatedButton
+from flet_core import UserControl, Container, Row, MainAxisAlignment, CrossAxisAlignment, FilePicker, \
+    FilePickerResultEvent, icons, RoundedRectangleBorder, ButtonStyle, Ref, TextField, padding, margin, ElevatedButton
 
 from src.data.config import config_instance
 

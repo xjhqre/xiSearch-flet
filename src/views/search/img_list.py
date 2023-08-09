@@ -1,12 +1,9 @@
 """
 图片展示列表
 """
-from typing import List
 
 from flet_core import UserControl, Row, Image, ImageFit, ImageRepeat, border_radius, Container, Ref, padding, \
-    ScrollMode, border, colors, margin
-
-from src.data.config import config_instance
+    ScrollMode, border, colors, margin, ControlEvent, SnackBar, Text, TextAlign, SnackBarBehavior
 
 
 class ImgList(UserControl):
@@ -18,6 +15,18 @@ class ImgList(UserControl):
         self.expand = True
         self.page = page
         self.img_list_Row = Ref[Row]()
+
+        self.page.snack_bar = SnackBar(
+            Text(
+                value="复制成功!",
+                color=colors.TEAL,
+                text_align=TextAlign.CENTER
+            ),
+            behavior=SnackBarBehavior.FLOATING,
+            bgcolor=colors.WHITE,
+            duration=2000,
+            margin=margin.only(bottom=30, left=1100, right=30),
+        )
 
     def build(self):
         # 导航栏容器
@@ -51,20 +60,23 @@ class ImgList(UserControl):
         self.img_list_Row.current.scroll_to(offset=0, duration=500)
         for path in similar_img_list:
             self.img_list_Row.current.controls.append(
-                Image(
-                    src=path,
-                    width=200,
-                    height=150,
-                    fit=ImageFit.CONTAIN,
-                    repeat=ImageRepeat.NO_REPEAT,
-                    border_radius=border_radius.all(10),
+                Container(
+                    on_click=self.copy_path,
+                    content=Image(
+                        tooltip=path,
+                        src=path,
+                        width=200,
+                        height=150,
+                        fit=ImageFit.CONTAIN,
+                        repeat=ImageRepeat.NO_REPEAT,
+                        border_radius=border_radius.all(10),
+                    )
                 )
             )
             self.update()
 
-# def main(page: Page):
-#     list = Ref[ImgList]()
-#     page.add(ImgList(list, page, None))
-#
-#
-# flet.app(target=main, port=8550)
+    # 点击图片复制图片路径到剪贴板
+    def copy_path(self, e: ControlEvent):
+        self.page.set_clipboard(e.control.content.src)
+        self.page.snack_bar.open = True
+        self.page.update()

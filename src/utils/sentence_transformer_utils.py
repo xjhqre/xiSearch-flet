@@ -31,7 +31,7 @@ def extract(img_path):
 
 
 # 搜索图片
-def search(query, k=30):
+def search(query, k=config_instance.get_result_count()):
     if not os.path.exists(config_instance.get_feature_path()):
         raise NoFeaturePathException
 
