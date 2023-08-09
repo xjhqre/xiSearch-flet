@@ -10,7 +10,7 @@ from src.data.config import config_instance
 class FeatureBar(UserControl):
 
     def __init__(self, ref, page, app_layout):
-        super().__init__(ref)
+        super().__init__(ref=ref)
         self.app_layout = app_layout
         self.view = None
         self.page = page

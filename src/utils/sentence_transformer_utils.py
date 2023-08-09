@@ -8,6 +8,8 @@ from PIL import Image
 from sentence_transformers import SentenceTransformer, util
 
 from src.data.config import config_instance
+from src.exception.no_feature_file_exception import NoFeatureFileException
+from src.exception.no_feature_path_exception import NoFeaturePathException
 
 torch.set_num_threads(4)
 
@@ -29,17 +31,16 @@ def extract(img_path):
 
 
 # 搜索图片
-def search(query, error_signal, k=30):
+def search(query, k=30):
     if not os.path.exists(config_instance.get_feature_path()):
-        error_signal.emit("没有设置特征文件路径")
-        return []
+        raise NoFeaturePathException
 
     img_names = []
     img_emb = None
     feature_list = list(glob.glob(config_instance.get_feature_path() + "*"))
     if len(feature_list) == 0:
-        error_signal.emit("请先提取特征文件")
-        return []
+        raise NoFeatureFileException
+
     for feature_path in feature_list:
         with open(feature_path, 'rb') as fIn:
             names, emb = pickle.load(fIn)

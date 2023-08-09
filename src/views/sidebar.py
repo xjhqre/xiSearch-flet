@@ -66,13 +66,11 @@ class Sidebar(UserControl):
             label_type=flet_core.NavigationRailLabelType.ALL,
             on_change=self.nav_change,  # 导航栏选项改变
             destinations=self.nav_items,  # 导航栏选项
-            # bgcolor=colors.BLUE_GREY,
             extended=True,  # 设置内容横向扩展
             expand=True,  # 设置伸展，填充满父容器
             # group_alignment=-1.0  # 垂直方向上的对齐，-1.0：顶部  0.0：中间  1.0：底部  默认-1.0
             # height=110
         )
-        self.toggle_nav_rail_button = IconButton(icons.ARROW_BACK)
 
     def build(self):
         # 导航栏容器
@@ -83,19 +81,12 @@ class Sidebar(UserControl):
                 ],
                 # 指定垂直方向应占用多少空间。默认值为 False - 将所有空间分配给子级。
                 tight=False),
-            # padding=padding.all(30),  # 导航容器内边距
-            # margin=margin.all(0),
             width=200,
             expand=True,
             bgcolor=colors.WHITE,
             alignment=alignment.center
         )
         return self.view
-
-    def toggle_nav_rail(self, e):
-        self.view.visible = not self.view.visible
-        self.view.update()
-        self.page.update()
 
     # 导航点击事件
     def nav_change(self, e):
@@ -108,20 +99,4 @@ class Sidebar(UserControl):
             self.app_layout.set_feature_view()
         elif index == 2:
             self.app_layout.set_setting_view()
-        # print(self.page.route)
         self.page.update()
-
-# def main(page: Page):
-#     page.title = "Flet Trello clone"
-#     page.padding = 0
-#     # page.theme = theme.Theme(font_family="Verdana")
-#     # page.theme.page_transitions.windows = "cupertino"
-#     page.fonts = {"Pacifico": "Pacifico-Regular.ttf"}
-#     page.bgcolor = colors.BLUE_GREY_200
-#     app = Sidebar(page)
-#     page.add(app)
-#     page.update()
-#     # app.initialize()
-#
-#
-# flet.app(target=main, assets_dir="../assets")

@@ -1,17 +1,20 @@
 import glob
 import os
+import pickle
 import time
 
 import torch
+from PIL import Image
 from flet import (
-    Control,
     Page,
     Row,
     Text,
 )
-from flet_core import Column, MainAxisAlignment, Ref, Container, padding, CrossAxisAlignment
+from flet_core import Column, MainAxisAlignment, Ref, Container, padding, CrossAxisAlignment, AlertDialog, TextButton
 
 from src.data.config import config_instance
+from src.exception.no_feature_file_exception import NoFeatureFileException
+from src.exception.no_feature_path_exception import NoFeaturePathException
 from src.utils import sentence_transformer_utils
 from src.views.feature.extract_log import ExtractLog
 from src.views.feature.feature_bar import FeatureBar
@@ -74,7 +77,17 @@ class AppLayout(Row):
         )
 
         # 设置视图
-        self.setting_view = Text("设置视图")
+        self.setting_view = Text("待开发")
+
+        # 提示对话框
+        self.dialog = AlertDialog(
+            title=Text("提示"),
+            content=Text(""),
+            actions=[
+                TextButton("是", on_click=self.close_dialog),
+            ],
+            actions_alignment=MainAxisAlignment.END,
+        )
 
         # 类成员变量的初始化语句，Control是变量的类型，self.all_boards_view是初始值。
         # 右侧界面的激活视图，默认为搜索视图
@@ -94,6 +107,7 @@ class AppLayout(Row):
     # 切换到搜索视图
     def set_search_view(self):
         self.active_view = self.search_view.current
+        self.img_list.current.show_result_image(config_instance.get_img_path_list())
         self.sidebar.nav_rail.selected_index = 0  # 导航栏选择索引为0
 
     # 切换到提取特征视图
@@ -165,6 +179,46 @@ class AppLayout(Row):
 
         self.extract_log.current.log_text.current.value = extract_log_text
         self.extract_log.current.update()
+
+    # 打开提示对话框
+    def open_dialog(self, e):
+        self.page.dialog = self.dialog
+        self.dialog.open = True
+        self.page.update()
+
+    # 关闭提示对话框
+    def close_dialog(self, e):
+        self.dialog.open = False
+        self.page.update()
+
+    # 搜索图片
+    def search_image(self, query):
+        if len(query) == 0:
+            self.dialog.content = Text("请先选择查询图片")
+            self.open_dialog(None)
+            return
+        if not os.path.exists(query):
+            self.dialog.content = Text("不存在对应的文件路径")
+            self.open_dialog(None)
+            return
+        try:
+            similar_img_list = sentence_transformer_utils.search(query)
+            config_instance.set_img_path_list(similar_img_list)
+        except NoFeaturePathException:
+            self.dialog.content = Text("请先设置特征文件保存地址")
+            self.open_dialog(None)
+            return
+        except NoFeatureFileException:
+            self.dialog.content = Text("没有找到特征文件")
+            self.open_dialog(None)
+            return
+        except Exception as e:
+            self.dialog.content = Text("未知错误")
+            self.open_dialog(None)
+            return
+
+        #  展示图片
+        self.img_list.current.show_result_image(similar_img_list)
 
 # def main(page: Page):
 #     page.title = "Flet Trello clone"
