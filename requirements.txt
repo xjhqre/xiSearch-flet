@@ -1,0 +1,4 @@
+sentence-transformers
+flet~=0.8.4
+torch~=1.13.1
+pillow~=9.5.0

@@ -1,0 +1,58 @@
+import glob
+import os
+import pickle
+import time
+
+import torch
+from PIL import Image
+from sentence_transformers import SentenceTransformer, util
+
+from src.data.config import config_instance
+
+torch.set_num_threads(4)
+
+model = SentenceTransformer('clip-ViT-B-32')
+
+
+# 存储张量
+def dump(img_names, img_emb):
+    with open(config_instance.get_feature_path() + str(int(time.time())) + ".pickle", 'wb') as fOut:
+        pickle.dump((img_names, img_emb), fOut)
+
+
+# 提取特征方法
+def extract(img_path):
+    img = Image.open(img_path)
+    emb = model.encode([img], batch_size=1, convert_to_tensor=True, show_progress_bar=False)
+    img.close()
+    return emb
+
+
+# 搜索图片
+def search(query, error_signal, k=30):
+    if not os.path.exists(config_instance.get_feature_path()):
+        error_signal.emit("没有设置特征文件路径")
+        return []
+
+    img_names = []
+    img_emb = None
+    feature_list = list(glob.glob(config_instance.get_feature_path() + "*"))
+    if len(feature_list) == 0:
+        error_signal.emit("请先提取特征文件")
+        return []
+    for feature_path in feature_list:
+        with open(feature_path, 'rb') as fIn:
+            names, emb = pickle.load(fIn)
+            img_names.extend(names)
+            if img_emb is None:
+                img_emb = emb
+            else:
+                img_emb = torch.concat((img_emb, emb), dim=0)
+
+    img = Image.open(query)
+    query_emb = model.encode([img], convert_to_tensor=True, show_progress_bar=False)
+    img.close()
+
+    hits = util.semantic_search(query_emb, img_emb, top_k=k)[0]
+
+    return [img_names[hit['corpus_id']] for hit in hits]
