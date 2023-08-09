@@ -1,7 +1,7 @@
 import flet
 from flet_core import Page, colors, theme
 
-from src.views.app_layout import AppLayout
+from views.app_layout import AppLayout
 
 
 def main(page: Page):

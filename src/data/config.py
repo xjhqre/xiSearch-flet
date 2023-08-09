@@ -5,6 +5,7 @@ import configparser
 import os
 
 configFile = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'config.ini')
+print(configFile)
 # 创建配置文件对象
 config = configparser.ConfigParser()
 # 读取文件
