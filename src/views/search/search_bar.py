@@ -51,9 +51,6 @@ class SearchBar(UserControl):
                             ref=self.file_path_text,
                             hint_text="请输入图片路径",
                             multiline=False,
-                            # dense=True,
-                            # width=700,
-                            # height=100,
                             expand=True,
                             # 保存输入数据
                             on_change=lambda e: config_instance.set_file_path(e.control.value)

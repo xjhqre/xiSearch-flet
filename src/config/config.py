@@ -26,7 +26,6 @@ def _update_config(option: str, value: str):
 class Config:
     def __init__(self):
         self._file_path: str = ""  # 搜索图片路径
-        self._img_path_list: list = []  # 搜索结果图片集合
         self._gallery_path = config.get("SETTINGS", "gallery_path")  # 图片库地址
 
         self._feature_path = config.get("SETTINGS", "feature_path") \
@@ -40,20 +39,11 @@ class Config:
                 or config.get("SETTINGS", "result_count") == "") \
             else int(config.get("SETTINGS", "result_count"))  # 搜索相似图片数量，默认30张
 
-        self._extract_button_is_disable: bool = False  # 提取按钮是否禁用
-        self._search_button_is_disable: bool = False  # 搜索按钮是否禁用
-
     def get_file_path(self):
         return self._file_path
 
     def set_file_path(self, value):
         self._file_path = value
-
-    def get_img_path_list(self):
-        return self._img_path_list
-
-    def set_img_path_list(self, img_path_list):
-        self._img_path_list = img_path_list
 
     def get_gallery_path(self):
         return self._gallery_path
@@ -80,18 +70,6 @@ class Config:
     def set_result_count(self, value):
         self._result_count = value
         _update_config("result_count", str(self._result_count))
-
-    def get_extract_button_is_disable(self):
-        return self._extract_button_is_disable
-
-    def set_extract_button_is_disable(self, value: bool):
-        self._extract_button_is_disable = value
-
-    def get_search_button_is_disable(self):
-        return self._search_button_is_disable
-
-    def set_search_button_is_disable(self, value: bool):
-        self._search_button_is_disable = value
 
 
 config_instance = Config()

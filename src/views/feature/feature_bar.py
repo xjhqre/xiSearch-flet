@@ -46,7 +46,6 @@ class FeatureBar(UserControl):
                                 text="提取特征",
                                 height=50,
                                 width=130,
-                                disabled=config_instance.get_extract_button_is_disable(),
                                 icon=icons.START,
                                 on_click=self.app_layout.extract_feature,
                                 # 方形圆角样式

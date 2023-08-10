@@ -12,7 +12,7 @@ from flet import (
     Text,
 )
 from flet_core import Column, MainAxisAlignment, Ref, Container, padding, CrossAxisAlignment, AlertDialog, TextButton, \
-    ControlEvent, ElevatedButton
+    ControlEvent, ElevatedButton, Stack
 
 from src.config.config import config_instance
 from src.exception.no_feature_file_exception import NoFeatureFileException
@@ -38,9 +38,7 @@ class AppLayout(Row):
         self.extract_log = Ref[ExtractLog]()
 
         # 搜索视图
-        self.search_view = Ref[Container]()
-        Container(
-            ref=self.search_view,
+        self.search_view = Container(
             expand=True,
             padding=padding.only(0, 50, 0, 0),
             content=Column(
@@ -59,10 +57,9 @@ class AppLayout(Row):
         )
 
         # 提取特征视图
-        self.feature_view = Ref[Container]()
-        Container(
-            ref=self.feature_view,
+        self.feature_view = Container(
             expand=True,
+            visible=False,
             padding=padding.only(0, 50, 0, 0),
             content=Column(
                 # 垂直居中对齐
@@ -80,10 +77,9 @@ class AppLayout(Row):
         )
 
         # 设置视图
-        self.setting_view = Ref[Container]()
-        Container(
-            ref=self.setting_view,
+        self.setting_view = Container(
             expand=True,
+            visible=False,
             padding=padding.only(0, 20, 0, 0),
             content=Column(
                 expand=True,
@@ -105,40 +101,37 @@ class AppLayout(Row):
 
         # 类成员变量的初始化语句，Control是变量的类型，self.all_boards_view是初始值。
         # 右侧界面的激活视图，默认为搜索视图
-        self._active_view: Ref[Container] = self.search_view
-        self.controls = [self.sidebar, self.active_view.current]
-
-    @property
-    def active_view(self):
-        return self._active_view
-
-    @active_view.setter
-    def active_view(self, view):
-        self._active_view = view
-        self.controls[-1] = self._active_view
-        self.update()
+        self.view_stack = Stack(
+            controls=[self.setting_view, self.feature_view, self.search_view],
+            expand=True,
+        )
+        self.controls = [self.sidebar, self.view_stack]
 
     # 切换到搜索视图
     def set_search_view(self):
-        self.active_view = self.search_view.current
-        self.img_list.current.show_result_image(config_instance.get_img_path_list())
+        self.setting_view.visible = False
+        self.feature_view.visible = False
+        self.search_view.visible = True
         self.sidebar.nav_rail.selected_index = 0  # 导航栏选择索引为0
 
     # 切换到提取特征视图
     def set_feature_view(self):
-        self.active_view = self.feature_view.current
+        self.setting_view.visible = False
+        self.feature_view.visible = True
+        self.search_view.visible = False
         self.sidebar.nav_rail.selected_index = 1  # 导航栏选择索引为1
 
     # 切换到设置视图
     def set_setting_view(self):
-        self.active_view = self.setting_view.current
+        self.setting_view.visible = True
+        self.feature_view.visible = False
+        self.search_view.visible = False
         self.sidebar.nav_rail.selected_index = 2  # 导航栏选择索引为1
 
     # 提取特征按钮点击触发函数，开始提取特征，extract_log 显示日志
     def extract_feature(self, e: ControlEvent):
         extract_button: ElevatedButton = e.control
         # 禁用提取按钮
-        config_instance.set_extract_button_is_disable(True)
         extract_button.disabled = True
         extract_button.update()
 
@@ -174,8 +167,9 @@ class AppLayout(Row):
                 extract_log_text += "当前提取图片：" + img_path + " --> " + str(cnt) + "\n"
                 cnt += 1
                 self.extract_log.current.log_text.current.value = extract_log_text
-                if self.active_view == self.feature_view.current:
-                    self.extract_log.current.update()
+                if self.extract_log.current.is_scroll_to_bottom:
+                    self.extract_log.current.column.current.scroll_to(offset=-1, duration=100)
+                self.extract_log.current.update()
             except Exception as e:
                 # 图片打开失败
                 error_img.append(img_path)
@@ -197,7 +191,6 @@ class AppLayout(Row):
         self.extract_log.current.update()
 
         # 开启提取按钮
-        config_instance.set_extract_button_is_disable(False)
         extract_button.disabled = False
         extract_button.update()
 
@@ -224,7 +217,6 @@ class AppLayout(Row):
             return
         try:
             similar_img_list = sentence_transformer_utils.search(query)
-            config_instance.set_img_path_list(similar_img_list)
         except NoFeaturePathException:
             self.dialog.content = Text("请先设置特征文件保存地址")
             self.open_dialog(None)
@@ -234,7 +226,7 @@ class AppLayout(Row):
             self.open_dialog(None)
             return
         except Exception as e:
-            traceback.print_exc()
+            # traceback.print_exc()
             self.dialog.content = Text("未知错误")
             self.open_dialog(None)
             return
