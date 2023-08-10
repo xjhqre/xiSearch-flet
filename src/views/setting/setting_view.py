@@ -5,7 +5,7 @@
 from flet_core import UserControl, Row, Image, ImageFit, ImageRepeat, border_radius, Container, Ref, padding, \
     ScrollMode, border, colors, margin, Column, MainAxisAlignment, KeyboardType
 
-from src.data.config import config_instance
+from src.config.config import config_instance
 from src.enum.setting_type import SettingType
 from src.views.setting.setting_item import SettingItem
 

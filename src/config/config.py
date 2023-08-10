@@ -4,15 +4,14 @@
 import configparser
 import os
 
-configFile = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'config.ini')
-print(configFile)
+# 项目目录
+project_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../')
+
+configFile = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../config.ini')
 # 创建配置文件对象
 config = configparser.ConfigParser()
 # 读取文件
 config.read(configFile, encoding='utf-8')
-
-# 项目目录
-project_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..\\')
 
 
 def _update_config(option: str, value: str):
@@ -38,9 +37,11 @@ class Config:
 
         self._result_count: int = 30 \
             if (config.get("SETTINGS", "result_count") is None
-                or config.get("SETTINGS",
-                              "result_count") != "") \
+                or config.get("SETTINGS", "result_count") == "") \
             else int(config.get("SETTINGS", "result_count"))  # 搜索相似图片数量，默认30张
+
+        self._extract_button_is_disable: bool = False  # 提取按钮是否禁用
+        self._search_button_is_disable: bool = False  # 搜索按钮是否禁用
 
     def get_file_path(self):
         return self._file_path
@@ -79,6 +80,18 @@ class Config:
     def set_result_count(self, value):
         self._result_count = value
         _update_config("result_count", str(self._result_count))
+
+    def get_extract_button_is_disable(self):
+        return self._extract_button_is_disable
+
+    def set_extract_button_is_disable(self, value: bool):
+        self._extract_button_is_disable = value
+
+    def get_search_button_is_disable(self):
+        return self._search_button_is_disable
+
+    def set_search_button_is_disable(self, value: bool):
+        self._search_button_is_disable = value
 
 
 config_instance = Config()

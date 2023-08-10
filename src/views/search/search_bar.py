@@ -3,9 +3,10 @@
 """
 
 from flet_core import UserControl, Container, Row, MainAxisAlignment, CrossAxisAlignment, FilePicker, \
-    FilePickerResultEvent, icons, RoundedRectangleBorder, ButtonStyle, Ref, TextField, padding, margin, ElevatedButton
+    FilePickerResultEvent, icons, RoundedRectangleBorder, ButtonStyle, Ref, TextField, padding, margin, ElevatedButton, \
+    Alignment
 
-from src.data.config import config_instance
+from src.config.config import config_instance
 
 
 class SearchBar(UserControl):
@@ -40,23 +41,22 @@ class SearchBar(UserControl):
                 vertical_alignment=CrossAxisAlignment.CENTER,
                 controls=[
                     Container(
+                        alignment=Alignment(0, 0),
                         expand=True,
                         # 输入框距 按钮 间隔50
                         margin=margin.only(right=50),
                         content=TextField(
+                            content_padding=10,
                             value=config_instance.get_file_path(),
                             ref=self.file_path_text,
                             hint_text="请输入图片路径",
                             multiline=False,
-                            # max_lines=1,
-                            dense=True,
+                            # dense=True,
                             # width=700,
-                            height=50,
+                            # height=100,
                             expand=True,
                             # 保存输入数据
                             on_change=lambda e: config_instance.set_file_path(e.control.value)
-                            # shift_enter=True,
-                            # on_submit="asd",
                         ),
 
                     ),

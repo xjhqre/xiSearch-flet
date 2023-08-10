@@ -2,9 +2,9 @@
 特征向量存储地址栏，设置存储向量的保存地址
 """
 from flet_core import UserControl, Container, padding, Row, MainAxisAlignment, CrossAxisAlignment, TextField, margin, \
-    FilledButton, icons, ButtonStyle, RoundedRectangleBorder
+    FilledButton, icons, ButtonStyle, RoundedRectangleBorder, ElevatedButton
 
-from src.data.config import config_instance
+from src.config.config import config_instance
 
 
 class FeatureBar(UserControl):
@@ -30,25 +30,25 @@ class FeatureBar(UserControl):
                         # 输入框距 按钮 间隔50
                         margin=margin.only(right=50),
                         content=TextField(
+                            content_padding=10,
                             value=config_instance.get_gallery_path(),
                             hint_text="请输入图片库地址",
                             # width=700,
-                            height=50,
+                            # height=50,
                             expand=True,
                             # 保存输入数据
                             on_change=lambda e: config_instance.set_gallery_path(e.control.value),
-                            # read_only=True,
-                            # border=InputBorder.NONE,
                         )
                     ),
                     Row(
                         controls=[
-                            FilledButton(
+                            ElevatedButton(
                                 text="提取特征",
                                 height=50,
                                 width=130,
+                                disabled=config_instance.get_extract_button_is_disable(),
                                 icon=icons.START,
-                                on_click=lambda _: self.app_layout.extract_feature(self),
+                                on_click=self.app_layout.extract_feature,
                                 # 方形圆角样式
                                 style=ButtonStyle(
                                     shape=RoundedRectangleBorder(radius=10),

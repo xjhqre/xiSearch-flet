@@ -6,7 +6,7 @@ from flet_core import UserControl, Row, padding, \
     Text, TextField, InputBorder, CrossAxisAlignment, ControlEvent, KeyboardType, AlertDialog, TextButton, \
     MainAxisAlignment
 
-from src.data.config import config_instance
+from src.config.config import config_instance
 from src.enum.setting_type import SettingType
 
 

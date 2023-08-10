@@ -7,7 +7,7 @@ import torch
 from PIL import Image
 from sentence_transformers import SentenceTransformer, util
 
-from src.data.config import config_instance
+from src.config.config import config_instance
 from src.exception.no_feature_file_exception import NoFeatureFileException
 from src.exception.no_feature_path_exception import NoFeaturePathException
 
@@ -31,7 +31,10 @@ def extract(img_path):
 
 
 # 搜索图片
-def search(query, k=config_instance.get_result_count()):
+def search(query, k=None):
+    # 默认参数值是在函数定义时计算的，而不是在运行时计算的
+    if k is None:
+        k = int(config_instance.get_result_count())
     if not os.path.exists(config_instance.get_feature_path()):
         raise NoFeaturePathException
 

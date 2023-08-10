@@ -2,6 +2,7 @@ import glob
 import os
 import pickle
 import time
+import traceback
 
 import torch
 from PIL import Image
@@ -10,9 +11,10 @@ from flet import (
     Row,
     Text,
 )
-from flet_core import Column, MainAxisAlignment, Ref, Container, padding, CrossAxisAlignment, AlertDialog, TextButton
+from flet_core import Column, MainAxisAlignment, Ref, Container, padding, CrossAxisAlignment, AlertDialog, TextButton, \
+    ControlEvent, ElevatedButton
 
-from src.data.config import config_instance
+from src.config.config import config_instance
 from src.exception.no_feature_file_exception import NoFeatureFileException
 from src.exception.no_feature_path_exception import NoFeaturePathException
 from src.utils import sentence_transformer_utils
@@ -133,7 +135,13 @@ class AppLayout(Row):
         self.sidebar.nav_rail.selected_index = 2  # 导航栏选择索引为1
 
     # 提取特征按钮点击触发函数，开始提取特征，extract_log 显示日志
-    def extract_feature(self, feature_bar: FeatureBar):
+    def extract_feature(self, e: ControlEvent):
+        extract_button: ElevatedButton = e.control
+        # 禁用提取按钮
+        config_instance.set_extract_button_is_disable(True)
+        extract_button.disabled = True
+        extract_button.update()
+
         time_start = time.time()  # 记录提取开始时间
         error_img = []  # 错误图片列表
         extract_log_text = ""  # 记录日志
@@ -166,10 +174,10 @@ class AppLayout(Row):
                 extract_log_text += "当前提取图片：" + img_path + " --> " + str(cnt) + "\n"
                 cnt += 1
                 self.extract_log.current.log_text.current.value = extract_log_text
-                self.extract_log.current.update()
+                if self.active_view == self.feature_view.current:
+                    self.extract_log.current.update()
             except Exception as e:
                 # 图片打开失败
-                print(e)
                 error_img.append(img_path)
                 img_path_list.remove(img_path)
 
@@ -187,6 +195,11 @@ class AppLayout(Row):
 
         self.extract_log.current.log_text.current.value = extract_log_text
         self.extract_log.current.update()
+
+        # 开启提取按钮
+        config_instance.set_extract_button_is_disable(False)
+        extract_button.disabled = False
+        extract_button.update()
 
     # 打开提示对话框
     def open_dialog(self, e):
@@ -221,6 +234,7 @@ class AppLayout(Row):
             self.open_dialog(None)
             return
         except Exception as e:
+            traceback.print_exc()
             self.dialog.content = Text("未知错误")
             self.open_dialog(None)
             return
