@@ -14,7 +14,12 @@ from src.exception.no_feature_path_exception import NoFeaturePathException
 
 torch.set_num_threads(4)
 
-model = SentenceTransformer(config.model_path)
+model_name_or_path = ""
+if os.path.exists(config.model_path):
+    model_name_or_path = config.model_path
+else:
+    model_name_or_path = "clip-ViT-B-32"
+model = SentenceTransformer(model_name_or_path)
 
 
 # 存储张量
