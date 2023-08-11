@@ -3,7 +3,6 @@ from PyInstaller.utils.hooks import copy_metadata
 from PyInstaller.utils.hooks import collect_data_files
 
 datas = [('D:\\workspace\\python\\xiSearch-flet\\config.ini', '.')]
-datas = [('D:\workspace\python\xiSearch-flet\model', 'model')]
 datas += collect_data_files('transformers', include_py_files=True, includes=['**/*.py'])
 datas += copy_metadata('torch')
 datas += copy_metadata('tqdm')
