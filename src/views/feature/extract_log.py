@@ -22,7 +22,7 @@ class ExtractLog(UserControl):
     def build(self):
         self.view = Container(
             width=950,
-            height=500,
+            height=300,
             ref=self.container,
             margin=margin.only(top=20),
             border=border.all(1, colors.BLACK),
@@ -33,7 +33,7 @@ class ExtractLog(UserControl):
                 scroll=ScrollMode.AUTO,
                 ref=self.column,
                 auto_scroll=False,
-                on_scroll=self.scroll_handler,
+                # on_scroll=self.scroll_handler,
                 controls=[
                     Text(
                         ref=self.log_text

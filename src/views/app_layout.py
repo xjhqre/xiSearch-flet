@@ -18,6 +18,7 @@ from src.exception.no_feature_path_exception import NoFeaturePathException
 from src.utils import sentence_transformer_utils
 from src.views.feature.extract_log import ExtractLog
 from src.views.feature.feature_bar import FeatureBar
+from src.views.feature.process_bar import ExtractProcessBar
 from src.views.search.img_list import ImgList
 from src.views.search.search_bar import SearchBar
 from src.views.setting.setting_view import SettingView
@@ -34,6 +35,7 @@ class AppLayout(Row):
         self.img_list = Ref[ImgList]()
         self.feature_bar = Ref[FeatureBar]()
         self.extract_log = Ref[ExtractLog]()
+        self.extract_process_bar = Ref[ExtractProcessBar]()
 
         # 搜索视图
         self.search_view = Container(
@@ -69,7 +71,9 @@ class AppLayout(Row):
                     # 特征向量存储地址栏
                     FeatureBar(ref=self.feature_bar, page=self.page, app_layout=self),
                     # 提取日志框
-                    ExtractLog(ref=self.extract_log, page=self.page, app_layout=self)
+                    ExtractLog(ref=self.extract_log, page=self.page, app_layout=self),
+                    # 提取进度条
+                    ExtractProcessBar(ref=self.extract_process_bar, page=self.page, app_layout=self)
                 ]
             )
         )
@@ -146,13 +150,16 @@ class AppLayout(Row):
         extract_button.update()
 
         time_start = time.time()  # 记录提取开始时间
-        error_img = []  # 错误图片列表
+        error_img_list = []  # 错误图片列表
         extract_log_text = ""  # 记录日志
+        self.extract_process_bar.current.reset_process_bar()  # 重置进度条
 
         img_path_list = list(glob.glob(config_instance.get_gallery_path() + "/*"))
         # 过滤掉非图片类型的文件
         img_path_list = [name for name in img_path_list if
                          os.path.splitext(name)[1] in config_instance.get_allow_types()]
+
+        totle_image_count = len(img_path_list)
 
         img_emb_list = None  # 特征向量
         img_path_list_batch = []  # 记录一部分图片路径，和 img_emb_list 一一对应
@@ -174,16 +181,18 @@ class AppLayout(Row):
                     img_path_list_batch.clear()
                     img_emb_list = None
 
-                extract_log_text += "当前提取图片：" + img_path + " --> " + str(cnt) + "\n"
+                extract_log_text = "当前提取图片：" + img_path + " --> " + str(cnt) + "\n"
+                self.extract_process_bar.current.process_bar.current.value = cnt / totle_image_count
+                self.extract_process_bar.current.progress_percentage.current.value = "{}%".format(
+                    int(round(cnt / totle_image_count, 2) * 100))
+                self.extract_process_bar.current.update()
                 cnt += 1
                 self.extract_log.current.log_text.current.value = extract_log_text
-                if self.extract_log.current.is_scroll_to_bottom:
-                    self.extract_log.current.column.current.scroll_to(offset=-1, duration=1)
                 self.extract_log.current.update()
             except Exception as e:
                 # 图片打开失败
                 # traceback.print_exc()
-                error_img.append(img_path)
+                error_img_list.append(img_path)
                 img_path_list.remove(img_path)
 
         # 存储剩余维度
@@ -191,11 +200,12 @@ class AppLayout(Row):
 
         time_end = time.time()  # 记录结束时间
         time_sum = time_end - time_start
-        extract_log_text += "提取结束，总共耗时：" + str(time_sum) + "秒\n"
+        extract_log_text = "提取结束，提取成功图片: {} 张,  提取失败图片: {} 张, 总耗时: {} 秒\n".format(
+            len(img_path_list), len(error_img_list), time_sum)
 
-        if error_img:
+        if error_img_list:
             extract_log_text += "提取失败图片:\n"
-            for path in error_img:
+            for path in error_img_list:
                 extract_log_text += path + "\n"
 
         self.extract_log.current.log_text.current.value = extract_log_text
