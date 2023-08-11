@@ -60,6 +60,8 @@ class SettingItem(UserControl):
     def update_setting(self, e: ControlEvent):
         self.value = e.control.value
         if self.setting_type == SettingType.FEATURE_PATH:
+            if e.control.value[-1] != '/' and e.control.value[-1] != '\\':
+                e.control.value += '\\'
             config_instance.set_feature_path(e.control.value)
         elif self.setting_type == SettingType.RESULT_COUNT:
             # 校验输入文本类型

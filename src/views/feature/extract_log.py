@@ -32,7 +32,7 @@ class ExtractLog(UserControl):
             content=Column(
                 scroll=ScrollMode.AUTO,
                 ref=self.column,
-                # auto_scroll=True,
+                auto_scroll=False,
                 on_scroll=self.scroll_handler,
                 controls=[
                     Text(

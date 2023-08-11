@@ -2,7 +2,7 @@
 特征向量存储地址栏，设置存储向量的保存地址
 """
 from flet_core import UserControl, Container, padding, Row, MainAxisAlignment, CrossAxisAlignment, TextField, margin, \
-    FilledButton, icons, ButtonStyle, RoundedRectangleBorder, ElevatedButton
+    icons, ButtonStyle, RoundedRectangleBorder, ElevatedButton
 
 from src.config.config import config_instance
 

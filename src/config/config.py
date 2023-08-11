@@ -28,16 +28,11 @@ class Config:
         self._file_path: str = ""  # 搜索图片路径
         self._gallery_path = config.get("SETTINGS", "gallery_path")  # 图片库地址
 
-        self._feature_path = config.get("SETTINGS", "feature_path") \
-            if (config.get("SETTINGS", "feature_path") is not None
-                and len(config.get("SETTINGS", "feature_path")) != 0) \
-            else os.path.join(project_path, 'feature\\')  # 特征向量存储目录，默认为feature目录
+        self._feature_path = config.get("SETTINGS", "feature_path")  # 特征向量存储目录，默认为feature目录
         self._allow_types = [".jpg", ".jpeg", ".gif", ".png", ".JPG", ".JPEG", ".GIF", ".PNG"]  # 允许的图片类型
 
-        self._result_count: int = 30 \
-            if (config.get("SETTINGS", "result_count") is None
-                or config.get("SETTINGS", "result_count") == "") \
-            else int(config.get("SETTINGS", "result_count"))  # 搜索相似图片数量，默认30张
+        self._result_count = 30 if not config.get("SETTINGS", "result_count") else int(
+            config.get("SETTINGS", "result_count"))  # 搜索相似图片数量，默认30张
 
     def get_file_path(self):
         return self._file_path
@@ -49,6 +44,8 @@ class Config:
         return self._gallery_path
 
     def set_gallery_path(self, gallery_path):
+        if gallery_path[-1] != "/" and gallery_path[-1] != "\\":
+            gallery_path += '\\'
         self._gallery_path = gallery_path
         # 修改配置文件
         _update_config("gallery_path", gallery_path)

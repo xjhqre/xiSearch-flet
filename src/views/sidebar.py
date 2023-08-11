@@ -7,10 +7,8 @@ from flet import (
     Column,
     Container,
     Text,
-    IconButton,
     NavigationRail,
     NavigationRailDestination,
-    colors,
     icons,
 )
 from flet_core import alignment

@@ -18,6 +18,8 @@ model = SentenceTransformer('clip-ViT-B-32')
 
 # 存储张量
 def dump(img_names, img_emb):
+    if not os.path.exists(config_instance.get_feature_path()):
+        os.makedirs(config_instance.get_feature_path())
     with open(config_instance.get_feature_path() + str(int(time.time())) + ".pickle", 'wb') as fOut:
         pickle.dump((img_names, img_emb), fOut)
 
@@ -54,7 +56,7 @@ def search(query, k=None):
                 img_emb = torch.concat((img_emb, emb), dim=0)
 
     img = Image.open(query)
-    query_emb = model.encode([img], convert_to_tensor=True, show_progress_bar=False)
+    query_emb = model.encode([img], batch_size=1, convert_to_tensor=True, show_progress_bar=False)
     img.close()
 
     hits = util.semantic_search(query_emb, img_emb, top_k=k)[0]

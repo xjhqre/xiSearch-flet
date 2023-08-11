@@ -1,11 +1,9 @@
 import glob
 import os
-import pickle
 import time
 import traceback
 
 import torch
-from PIL import Image
 from flet import (
     Page,
     Row,
@@ -131,6 +129,18 @@ class AppLayout(Row):
     # 提取特征按钮点击触发函数，开始提取特征，extract_log 显示日志
     def extract_feature(self, e: ControlEvent):
         extract_button: ElevatedButton = e.control
+
+        # 配置校验
+        if len(config_instance.get_gallery_path()) == 0:
+            self.dialog.content = Text("请先设置图片库地址")
+            self.open_dialog(None)
+            return
+
+        if len(config_instance.get_feature_path()) == 0:
+            self.dialog.content = Text("请先设置特征文件保存地址")
+            self.open_dialog(None)
+            return
+
         # 禁用提取按钮
         extract_button.disabled = True
         extract_button.update()
@@ -168,10 +178,11 @@ class AppLayout(Row):
                 cnt += 1
                 self.extract_log.current.log_text.current.value = extract_log_text
                 if self.extract_log.current.is_scroll_to_bottom:
-                    self.extract_log.current.column.current.scroll_to(offset=-1, duration=100)
+                    self.extract_log.current.column.current.scroll_to(offset=-1, duration=1)
                 self.extract_log.current.update()
             except Exception as e:
                 # 图片打开失败
+                # traceback.print_exc()
                 error_img.append(img_path)
                 img_path_list.remove(img_path)
 

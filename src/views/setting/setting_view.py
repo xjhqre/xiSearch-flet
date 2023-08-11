@@ -2,8 +2,8 @@
 设置视图
 """
 
-from flet_core import UserControl, Row, Image, ImageFit, ImageRepeat, border_radius, Container, Ref, padding, \
-    ScrollMode, border, colors, margin, Column, MainAxisAlignment, KeyboardType
+from flet_core import UserControl, Row, Container, padding, \
+    Column, MainAxisAlignment, KeyboardType
 
 from src.config.config import config_instance
 from src.enum.setting_type import SettingType
