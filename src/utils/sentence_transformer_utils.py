@@ -7,13 +7,14 @@ import torch
 from PIL import Image
 from sentence_transformers import SentenceTransformer, util
 
+from src.config import config
 from src.config.config import config_instance
 from src.exception.no_feature_file_exception import NoFeatureFileException
 from src.exception.no_feature_path_exception import NoFeaturePathException
 
 torch.set_num_threads(4)
 
-model = SentenceTransformer('clip-ViT-B-32')
+model = SentenceTransformer(config.model_path)
 
 
 # 存储张量

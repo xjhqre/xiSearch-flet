@@ -7,6 +7,9 @@ import os
 # 项目目录
 project_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../')
 
+# 模型路径
+model_path = os.path.join(project_path, 'model', 'sentence-transformers_clip-ViT-B-32')
+
 configFile = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../config.ini')
 # 创建配置文件对象
 config = configparser.ConfigParser()
