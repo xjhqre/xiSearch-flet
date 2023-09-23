@@ -191,7 +191,7 @@ class AppLayout(Row):
                 self.extract_log.current.update()
             except Exception as e:
                 # 图片打开失败
-                # traceback.print_exc()
+                traceback.print_exc()
                 error_img_list.append(img_path)
                 img_path_list.remove(img_path)
 

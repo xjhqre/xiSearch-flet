@@ -5,12 +5,13 @@ import time
 
 import torch
 from PIL import Image
-from sentence_transformers import SentenceTransformer, util
+from sentence_transformers import SentenceTransformer, util, models
 
 from src.config import config
 from src.config.config import config_instance
 from src.exception.no_feature_file_exception import NoFeatureFileException
 from src.exception.no_feature_path_exception import NoFeaturePathException
+import torch.nn as nn
 
 torch.set_num_threads(4)
 
@@ -19,7 +20,14 @@ if os.path.exists(config.model_path):
     model_name_or_path = config.model_path
 else:
     model_name_or_path = "clip-ViT-B-32"
-model = SentenceTransformer(model_name_or_path)
+word_embedding_model = models.CNN
+model = SentenceTransformer(word_embedding_model)
+
+
+# model = SentenceTransformer("all-MiniLM-L6-v2")
+
+
+# model = SentenceTransformer(model_name_or_path)
 
 
 # 存储张量
