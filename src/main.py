@@ -1,12 +1,13 @@
 import os
 import sys
 
+import flet
+
 if sys.stdout is None:
     sys.stdout = open(os.devnull, "w")
 if sys.stderr is None:
     sys.stderr = open(os.devnull, "w")
 
-import flet
 from flet_core import Page, colors, theme
 
 from views.app_layout import AppLayout
