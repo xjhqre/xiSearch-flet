@@ -2,8 +2,6 @@ import glob
 import os
 import time
 
-from src.utils import sentence_transformer_utils
-
 # 提取结束，提取成功图片: 165 张 总耗时: 26.309924364089966 秒
 
 img_path_list = list(glob.glob("F:\\ACG\\新建文件夹" + "/*"))

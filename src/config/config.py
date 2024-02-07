@@ -7,35 +7,32 @@ import os
 # 项目目录
 project_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../')
 
-# 模型路径
-model_path = os.path.join(project_path, 'model', 'sentence-transformers_clip-ViT-B-32')
-
 configFile = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../config.ini')
 # 创建配置文件对象
-config = configparser.ConfigParser()
+config_parser = configparser.ConfigParser()
 # 读取文件
-config.read(configFile, encoding='utf-8')
+config_parser.read(configFile, encoding='utf-8')
 
 
 def _update_config(option: str, value: str):
-    config.read(configFile, encoding='utf-8')
-    if not config.has_section("SETTINGS"):
-        config.add_section("SETTINGS")
-    config.set("SETTINGS", option, value)
+    config_parser.read(configFile, encoding='utf-8')
+    if not config_parser.has_section("SETTINGS"):
+        config_parser.add_section("SETTINGS")
+    config_parser.set("SETTINGS", option, value)
     with open(configFile, 'w', encoding='utf-8') as configfile:
-        config.write(configfile)
+        config_parser.write(configfile)
 
 
 class Config:
     def __init__(self):
         self._file_path: str = ""  # 搜索图片路径
-        self._gallery_path = config.get("SETTINGS", "gallery_path")  # 图片库地址
+        self._gallery_path = config_parser.get("SETTINGS", "gallery_path")  # 图片库地址
 
-        self._feature_path = config.get("SETTINGS", "feature_path")  # 特征向量存储目录，默认为feature目录
+        self._feature_path = config_parser.get("SETTINGS", "feature_path")  # 特征向量存储目录，默认为feature目录
         self._allow_types = [".jpg", ".jpeg", ".gif", ".png", ".JPG", ".JPEG", ".GIF", ".PNG"]  # 允许的图片类型
 
-        self._result_count = 30 if not config.get("SETTINGS", "result_count") else int(
-            config.get("SETTINGS", "result_count"))  # 搜索相似图片数量，默认30张
+        self._result_count = 30 if not config_parser.get("SETTINGS", "result_count") else int(
+            config_parser.get("SETTINGS", "result_count"))  # 搜索相似图片数量，默认30张
 
     def get_file_path(self):
         return self._file_path
