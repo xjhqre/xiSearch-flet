@@ -2,17 +2,11 @@
 from PyInstaller.utils.hooks import copy_metadata
 from PyInstaller.utils.hooks import collect_data_files
 
-datas = [('D:\\workspace\\python\\xiSearch-flet\\config.ini', '.'), ('D:\\workspace\\python\\xiSearch-flet\\model', 'model')]
-datas += collect_data_files('transformers', include_py_files=True, includes=['**/*.py'])
-datas += copy_metadata('torch')
-datas += copy_metadata('tqdm')
-datas += copy_metadata('regex')
+datas = [('D:\\workspace\\xiSearch-flet\\config.ini', '.')]
 datas += copy_metadata('requests')
 datas += copy_metadata('packaging')
-datas += copy_metadata('filelock')
 datas += copy_metadata('numpy')
 datas += copy_metadata('pillow')
-datas += copy_metadata('tokenizers')
 
 
 block_cipher = None
@@ -20,7 +14,7 @@ block_cipher = None
 
 a = Analysis(
     ['src/main.py'],
-    pathex=['D:\\workspace\\python\\xiSearch-flet'],
+    pathex=['D:\\workspace\\xiSearch-flet'],
     binaries=[],
     datas=datas,
     hiddenimports=[],
@@ -42,7 +36,7 @@ exe = EXE(
     exclude_binaries=True,
     name='xiSearch-flet',
     debug=False,
-    icon='D:\\workspace\\python\\xiSearch-flet\\icon.ico',
+    icon='D:\\workspace\\xiSearch-flet\\icon.ico',
     bootloader_ignore_signals=False,
     strip=False,
     upx=True,
