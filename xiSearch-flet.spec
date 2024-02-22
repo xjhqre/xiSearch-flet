@@ -2,7 +2,9 @@
 from PyInstaller.utils.hooks import copy_metadata
 from PyInstaller.utils.hooks import collect_data_files
 
-datas = [('D:\\workspace\\xiSearch-flet\\config.ini', '.')]
+datas = [
+    ('D:\\workspace\\xiSearch-flet\\config.ini', '.')
+]
 datas += copy_metadata('requests')
 datas += copy_metadata('packaging')
 datas += copy_metadata('numpy')
