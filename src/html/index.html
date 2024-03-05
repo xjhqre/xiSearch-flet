@@ -59,13 +59,10 @@
     <!-- 主体内容 -->
     <div class="content">
         <!-- 搜索页面 -->
-        <div class="page1 hidden-page">
+        <div class="page1 ">
             <div class="search-bar">
-                <input type="text" placeholder="请输入文件路径"/>
-                <div class="button-list">
-                    <div class="button">选择图片</div>
-                    <div class="button">搜索图片</div>
-                </div>
+                <input id="searchImagePath" type="text" placeholder="请输入搜索图片路径"/>
+                <div class="button" onclick="searchImages()">搜索图片</div>
             </div>
 
             <!-- 搜索图片结果展示 -->
@@ -77,8 +74,8 @@
         <!-- 提取特征页面 -->
         <div class="page2 hidden-page">
             <div class="head">
-                <input type="text" placeholder="请输入特征文件路径"/>
-                <div class="button">提取特征</div>
+                <input id="imgFolderPath" type="text" placeholder="请输入图片库地址" oninput="imgFolderPathChange();"/>
+                <div class="button" onclick="extractFeatures()">提取特征</div>
             </div>
 
             <!-- 提取日志 -->
@@ -88,19 +85,19 @@
         </div>
 
         <!-- 设置页面 -->
-        <div class="page3 ">
+        <div class="page3 hidden-page">
             <div class="setting-item">
                 <div class="name">特征文件保存地址:</div>
-                <input id="featureFileStorageAddress" type="text"/>
+                <input id="featureFileStorageAddress" type="text" oninput="featureFileStorageAddressChange();"/>
             </div>
             <div class="setting-item">
                 <div class="name">搜索相似图片数量:</div>
-                <input id="searchSimilarImagesNumber" type="text"/>
+                <input id="searchSimilarImagesNumber" type="text" oninput="searchSimilarImagesNumberChange();"/>
             </div>
         </div>
     </div>
 </div>
-<script src=" script.js">
+<script src="script.js">
 </script>
 </body>
 </html>

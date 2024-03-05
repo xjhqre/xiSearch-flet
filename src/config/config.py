@@ -34,37 +34,46 @@ class Config:
         self._result_count = 30 if not config_parser.get("SETTINGS", "result_count") else int(
             config_parser.get("SETTINGS", "result_count"))  # 搜索相似图片数量，默认30张
 
-    def get_file_path(self):
+    @property
+    def file_path(self):
         return self._file_path
 
-    def set_file_path(self, value):
+    @file_path.setter
+    def file_path(self, value):
         self._file_path = value
 
-    def get_gallery_path(self):
+    @property
+    def gallery_path(self):
         return self._gallery_path
 
-    def set_gallery_path(self, gallery_path):
+    @gallery_path.setter
+    def gallery_path(self, gallery_path):
         if gallery_path[-1] != "/" and gallery_path[-1] != "\\":
             gallery_path += '\\'
         self._gallery_path = gallery_path
         # 修改配置文件
         _update_config("gallery_path", gallery_path)
 
-    def get_feature_path(self):
+    @property
+    def feature_path(self):
         return self._feature_path
 
-    def set_feature_path(self, feature_path):
+    @feature_path.setter
+    def feature_path(self, feature_path):
         self._feature_path = feature_path
         # 修改配置文件
         _update_config("feature_path", self._feature_path)
 
-    def get_allow_types(self):
+    @property
+    def allow_types(self):
         return self._allow_types
 
-    def get_result_count(self):
+    @property
+    def result_count(self):
         return self._result_count
 
-    def set_result_count(self, value):
+    @result_count.setter
+    def result_count(self, value):
         self._result_count = value
         _update_config("result_count", str(self._result_count))
 

@@ -12,6 +12,7 @@ from src.config.config import config_instance
 from src.exception.my_base_exception import MyBaseException
 from src.exception.no_feature_file_exception import NoFeatureFileException
 from src.exception.no_feature_path_exception import NoFeaturePathException
+from src.log.log import log
 
 
 def image_process(img_path):
@@ -41,9 +42,9 @@ def dump(img_name_list, img_feature_list):
     Returns:
     None
     """
-    if not os.path.exists(config_instance.get_feature_path()):
-        os.makedirs(config_instance.get_feature_path())
-    with open(config_instance.get_feature_path() + os.sep + str(int(time.time())) + ".pickle", 'wb') as fOut:
+    if not os.path.exists(config_instance.feature_path):
+        os.makedirs(config_instance.feature_path)
+    with open(config_instance.feature_path + os.sep + str(int(time.time())) + ".pickle", 'wb') as fOut:
         pickle.dump((img_name_list, img_feature_list), fOut)
 
 
@@ -79,9 +80,9 @@ def search(query_img_path, k=None):
     """
     # 默认参数值是在函数定义时计算的，而不是在运行时计算的
     if k is None:
-        k = int(config_instance.get_result_count())
+        k = int(config_instance.result_count)
 
-    feature_path = config_instance.get_feature_path()
+    feature_path = config_instance.feature_path
     if not os.path.exists(feature_path):
         raise NoFeaturePathException
 
@@ -128,11 +129,10 @@ class FeatureExtractor:
         feature = self.model.predict(x)  # 使用模型提取特征
         return feature.flatten()  # 返回扁平化的特征数组
 
-    def extract_batch(self, img_folder_path, extract_log, batch_size=32):
+    def extract_batch(self, img_folder_path, batch_size=32):
         """
         批量提取
         :param img_folder_path: 图片文件夹路径
-        :param extract_log: 日志组件
         :param batch_size: batch大小
         :return:
         """
@@ -146,14 +146,12 @@ class FeatureExtractor:
 
         img_path_batch = []  # 每1024个特征保存一次
         img_feature_batch = []  # 每1024个特征保存一次
-        extract_log_text = "开始提取！\n"
-        extract_log.current.log_text.current.value = extract_log_text
-        extract_log.current.update()
+        log.extract_log = "开始提取！\n"
 
         for img_path_list in img_path_list_generator:
             # 过滤掉非图片类型的文件
             img_path_list = [name for name in img_path_list if
-                             os.path.splitext(name)[1] in config_instance.get_allow_types()]
+                             os.path.splitext(name)[1] in config_instance.allow_types]
 
             # 创建一个空的数组用于存储图像数据
             batch_images = np.zeros(
@@ -175,9 +173,7 @@ class FeatureExtractor:
             cnt += len(img_path_list)
             time_process = time.time()
             time_use = time_process - time_start
-            extract_log_text += "已提取图片数量：{}, 耗时：{} 秒\n".format(cnt, time_use)
-            extract_log.current.log_text.current.value = extract_log_text
-            extract_log.current.update()
+            log.extract_log += "已提取图片数量：{}, 耗时：{} 秒\n".format(cnt, time_use)
 
             # 每1024个特征保存一次
             if len(img_path_batch) >= 1024:
@@ -190,10 +186,8 @@ class FeatureExtractor:
 
         time_end = time.time()
         time_sum = time_end - time_start
-        extract_log_text += "提取结束，提取成功图片: {} 张, 总耗时: {} 秒\n".format(
+        log.extract_log += "提取结束，提取成功图片: {} 张, 总耗时: {} 秒\n".format(
             cnt, time_sum)
-        extract_log.current.log_text.current.value = extract_log_text
-        extract_log.current.update()
 
 
 fe = FeatureExtractor()
@@ -203,4 +197,4 @@ if __name__ == '__main__':
     # print(result)
     fe.extract_batch("F:\\ACG\\壁纸")
     # fe.extract("F:\\ACG\\新建文件夹\\63-1Z61Q45G4Z7.png")
-    # print(list(glob.glob(config_instance.get_feature_path() + os.sep + "*")))
+    # print(list(glob.glob(config_instance.get_feature_path + os.sep + "*")))
