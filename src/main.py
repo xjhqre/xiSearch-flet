@@ -1,34 +1,32 @@
-import os
+import random
 import sys
 
-import flet
-
-if sys.stdout is None:
-    sys.stdout = open(os.devnull, "w")
-if sys.stderr is None:
-    sys.stderr = open(os.devnull, "w")
-
-from flet_core import Page, colors, theme
-
-from views.app_layout import AppLayout
+import webview
 
 
-def main(page: Page):
-    page.title = "xiSearch-flet"
-    page.padding = 0
-    # page.scroll = True,
-    page.theme = theme.Theme(font_family="微软雅黑")
-    page.theme.page_transitions.windows = "cupertino"
-    page.bgcolor = colors.WHITE
-    page.add(AppLayout(
-        # self,
-        page,
-        tight=True,
-        expand=True,
-        auto_scroll=True,
-        vertical_alignment="start",
-    ))
-    page.update()
+class Api:
+
+    def init(self):
+        response = {'message': 'Hello from Python {0}'.format(sys.version)}
+        return response
+
+    def getRandomNumber(self):
+        response = {
+            'message': 'Here is a random number courtesy of randint: {0}'.format(
+                random.randint(0, 100000000)
+            )
+        }
+        return response
+
+    def sayHelloTo(self, name):
+        response = {'message': 'Hello {0}!'.format(name)}
+        return response
+
+    def error(self):
+        raise Exception('This is a Python exception')
 
 
-flet.app(target=main, assets_dir="../assets")
+if __name__ == '__main__':
+    api = Api()
+    webview.create_window('Todos magnificos', '../html/index.html', js_api=api, min_size=(800, 600), maximized=True)
+    webview.start()
