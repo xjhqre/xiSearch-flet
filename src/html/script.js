@@ -11,6 +11,7 @@ const featureExtraction = body.querySelector('#feature-extraction') // 侧边栏
 const imgFolderPath = body.querySelector('#imgFolderPath') // 图片库地址输入框
 const searchImagePath = body.querySelector('#searchImagePath') // 搜索图片路径输入框
 const setting = body.querySelector('#setting') // 设置按钮
+const searchImageButton = body.querySelector('#searchImageButton') // 搜索图片按钮
 const featureFileStorageAddress = body.querySelector('#featureFileStorageAddress') // 特征文件存储地址输入框
 const searchSimilarImagesNumber = body.querySelector('#searchSimilarImagesNumber') // 搜索相似图片数量输入框
 let featureExtractionTimer = 1// 特征提取定时器
@@ -109,6 +110,10 @@ function getExtractionLog() {
 
 // 搜索图片
 function searchImages() {
+    if (searchImagePath.value === undefined || searchImagePath.value === "") {
+        return
+    }
+    searchImageButton.classList.add('loading')
     // 清空之前查询的图片
     while (showImgList.firstChild) {
         showImgList.firstChild.remove();
@@ -131,6 +136,8 @@ function loadImg(response) {
         type: "success",
         duration: 1000,
     });
+    // 停止加载动画
+    searchImageButton.classList.remove('loading')
 }
 
 // 复制图片地址

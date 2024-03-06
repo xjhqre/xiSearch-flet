@@ -7,6 +7,7 @@
     <link rel="stylesheet" type="text/css" href="style.css"/>
     <link rel="stylesheet" type="text/css" href="scrollbar.css"/>
     <link rel="stylesheet" type="text/css" href="message.css"/>
+    <link rel="stylesheet" type="text/css" href="loadButton.css"/>
     <!-- 图标组件库 -->
     <link href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css' rel='stylesheet'>
 </head>
@@ -63,7 +64,9 @@
         <div class="page1 ">
             <div class="search-bar">
                 <input id="searchImagePath" type="text" placeholder="请输入搜索图片路径"/>
-                <div class="button" onclick="searchImages()">搜索图片</div>
+                <div id="searchImageButton" class="button" onclick="searchImages()">
+                    <span>搜索图片</span>
+                </div>
             </div>
 
             <!-- 搜索图片结果展示 -->
@@ -98,7 +101,7 @@
         </div>
     </div>
 </div>
-<script src="script.js"></script>
 <script src="message.js"></script>
+<script src="script.js"></script>
 </body>
 </html>
