@@ -14,6 +14,7 @@ const setting = body.querySelector('#setting') // 设置按钮
 const featureFileStorageAddress = body.querySelector('#featureFileStorageAddress') // 特征文件存储地址输入框
 const searchSimilarImagesNumber = body.querySelector('#searchSimilarImagesNumber') // 搜索相似图片数量输入框
 let featureExtractionTimer = 1// 特征提取定时器
+const message = new Message() // 气泡提示消息
 
 // 侧边栏伸缩按钮点击事件
 toggle.addEventListener('click', () => {
@@ -108,19 +109,44 @@ function getExtractionLog() {
 
 // 搜索图片
 function searchImages() {
+    // 清空之前查询的图片
+    while (showImgList.firstChild) {
+        showImgList.firstChild.remove();
+    }
     window.pywebview.api.search_images(searchImagePath.value).then(loadImg)
 }
 
 // 加载图片
 function loadImg(response) {
-    response.img_list.forEach(item => {
+    for (let i = 0; i < response.img_path_list.length; i++) {
         const cell = document.createElement('div')
         cell.classList.add('cell')
         cell.innerHTML = `
-		    <img src=${item} />
+		    <img src=${response.base64_list[i]} title=${response.img_path_list[i]} onclick="copyTextToClipboard(this)" />
 		`
         showImgList.appendChild(cell)
-    })
+    }
+    message.setOption({
+        message: '搜索完成！',
+        type: "success",
+        duration: 1000,
+    });
+}
+
+// 复制图片地址
+function copyTextToClipboard(imgDom) {
+    navigator.clipboard.writeText(imgDom.title)
+        .then(() => {
+            message.setOption({
+                message: '复制路径成功！',
+                type: "success",
+                duration: 1000,
+            });
+            console.log('文本已成功复制到剪贴板');
+        })
+        .catch(err => {
+            console.error('无法复制到剪贴板: ', err);
+        });
 }
 
 /**

@@ -69,8 +69,10 @@ class Api:
         搜索图片
         :return:
         """
+        img_path_list = feature_extractor.search(search_img_path)
         response = {
-            'img_list': generateBase64(feature_extractor.search(search_img_path))
+            'img_path_list': img_path_list,
+            'base64_list': generateBase64(img_path_list)
         }
         return response
 

@@ -200,7 +200,6 @@ body {
 .content .page1 {
     height: 100%;
     width: 100%;
-    border: 0.0625rem solid black;
     display: flex;
     flex-direction: column;
 }
@@ -209,9 +208,6 @@ body {
 .content .page1 .search-bar {
     display: flex;
     align-items: center;
-    margin-top: 50px;
-    margin-left: 50px;
-    margin-right: 50px;
 }
 
 /* 图片搜索输入框样式*/
@@ -244,20 +240,17 @@ body {
 
 .content .page1 .show-img-list {
     padding-right: 20px;
-    margin-bottom: 50px;
     display: flex;
     flex-wrap: wrap;
     height: 100%;
     margin-top: 50px;
-    margin-left: 50px;
-    margin-right: 50px;
     overflow: auto;
     background-color: var(--primary-color-light);
     border-radius: 10px;
 }
 
 .content .page1 .show-img-list .cell {
-    flex: 0 0 20%;
+    flex: 0 0 25%;
     padding: 10px;
 }
 
@@ -270,7 +263,6 @@ body {
 .content .page2 {
     height: 100%;
     width: 100%;
-    border: 0.0625rem solid black;
     display: flex;
     flex-direction: column;
 }
@@ -278,9 +270,6 @@ body {
 .content .page2 .head {
     display: flex;
     align-items: center;
-    margin-top: 50px;
-    margin-left: 50px;
-    margin-right: 50px;
 }
 
 .content .page2 .head input {
@@ -312,11 +301,8 @@ body {
 
 .content .page2 .extract-log {
     padding: 15px 20px;
-    margin-bottom: 50px;
     height: 100%;
     margin-top: 50px;
-    margin-left: 50px;
-    margin-right: 50px;
     overflow: auto;
     background-color: var(--primary-color-light);
     border-radius: 10px;
@@ -331,7 +317,6 @@ body {
     flex-direction: column;
     height: 100%;
     width: 100%;
-    border: 0.0625rem solid black;
 }
 
 .content .page3 .setting-item {
