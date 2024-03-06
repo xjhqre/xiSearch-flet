@@ -3,7 +3,8 @@ from PyInstaller.utils.hooks import copy_metadata
 from PyInstaller.utils.hooks import collect_data_files
 
 datas = [
-    ('D:\\workspace\\xiSearch-flet\\config.ini', '.')
+    ('D:\\workspace\\xiSearch-flet\\config.ini', '.'),
+    ('D:\\workspace\\xiSearch-flet\\html', 'html')
 ]
 datas += copy_metadata('requests')
 datas += copy_metadata('packaging')
