@@ -25,6 +25,9 @@ def generateBase64(img_path_list):
             im.thumbnail((400, 400))
 
             # 保存缩略图
+            if not os.path.exists(config.project_path + 'img/'):
+                # 如果目录不存在则创建
+                os.makedirs(config.project_path + 'img/')
             im.save(config.project_path + 'img/' + file_name)
 
         with open(config.project_path + 'img/' + file_name, 'rb') as f:
