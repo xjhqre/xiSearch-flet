@@ -40,7 +40,7 @@ class AppLayout(Row):
         # 搜索视图
         self.search_view = Container(
             expand=True,
-            padding=padding.only(0, 50, 0, 0),
+            padding=padding.only(50, 50, 50, 50),
             content=Column(
                 # 垂直居中对齐
                 alignment=MainAxisAlignment.START,
@@ -154,7 +154,16 @@ class AppLayout(Row):
         extract_log_text = ""  # 记录日志
         self.extract_process_bar.current.reset_process_bar()  # 重置进度条
 
-        img_path_list = list(glob.glob(config_instance.get_gallery_path() + "/*"))
+        img_path_list = []
+        if config_instance.get_contains_sub_directories() == 'Y':
+            for root, dirs, files in os.walk(config_instance.get_gallery_path()):
+                for file in files:
+                    # 拼接文件的完整路径
+                    file_path = os.path.join(root, file)
+                    img_path_list.append(file_path)
+        else:
+            img_path_list = list(glob.glob(config_instance.get_gallery_path() + "/*"))
+
         # 过滤掉非图片类型的文件
         img_path_list = [name for name in img_path_list if
                          os.path.splitext(name)[1] in config_instance.get_allow_types()]
@@ -247,7 +256,7 @@ class AppLayout(Row):
             self.open_dialog(None)
             return
         except Exception as e:
-            # traceback.print_exc()
+            traceback.print_exc()
             self.dialog.content = Text("未知错误")
             self.open_dialog(None)
             return

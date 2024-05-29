@@ -30,6 +30,7 @@ class Config:
     def __init__(self):
         self._file_path: str = ""  # 搜索图片路径
         self._gallery_path = config.get("SETTINGS", "gallery_path")  # 图片库地址
+        self._contains_sub_directories = config.get("SETTINGS", "contains_sub_directories")  # 图片库地址
 
         self._feature_path = config.get("SETTINGS", "feature_path")  # 特征向量存储目录，默认为feature目录
         self._allow_types = [".jpg", ".jpeg", ".gif", ".png", ".JPG", ".JPEG", ".GIF", ".PNG"]  # 允许的图片类型
@@ -52,6 +53,13 @@ class Config:
         self._gallery_path = gallery_path
         # 修改配置文件
         _update_config("gallery_path", gallery_path)
+
+    def get_contains_sub_directories(self):
+        return self._contains_sub_directories
+
+    def set_contains_sub_directories(self, value):
+        self._contains_sub_directories = value
+        _update_config("contains_sub_directories", self._contains_sub_directories)
 
     def get_feature_path(self):
         return self._feature_path

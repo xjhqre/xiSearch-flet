@@ -7,6 +7,7 @@ from flet_core import UserControl, Row, Container, padding, \
 
 from src.config.config import config_instance
 from src.enum.setting_type import SettingType
+from src.views.setting.radio_item import RadioItem
 from src.views.setting.setting_item import SettingItem
 
 
@@ -41,6 +42,12 @@ class SettingView(UserControl):
                         controls=[
                             SettingItem("搜索相似图片数量: ", config_instance.get_result_count(),
                                         SettingType.RESULT_COUNT, KeyboardType.NUMBER, 80, False)
+                        ]
+                    ),
+                    Row(
+                        alignment=MainAxisAlignment.START,
+                        controls=[
+                            RadioItem("提取特征是否包含子目录: ", config_instance.get_contains_sub_directories(), 80, False)
                         ]
                     )
                 ]

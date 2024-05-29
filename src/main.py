@@ -29,5 +29,6 @@ def main(page: Page):
     ))
     page.update()
 
+if __name__ == '__main__':
+    flet.app(target=main, assets_dir="../assets")
 
-flet.app(target=main, assets_dir="../assets")

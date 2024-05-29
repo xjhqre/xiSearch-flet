@@ -1,9 +1,11 @@
 """
 图片展示列表
 """
+import os
 
 from flet_core import UserControl, Row, Image, ImageFit, ImageRepeat, border_radius, Container, Ref, padding, \
-    ScrollMode, border, colors, margin, ControlEvent, SnackBar, Text, TextAlign, SnackBarBehavior
+    ScrollMode, border, colors, margin, ControlEvent, SnackBar, Text, TextAlign, SnackBarBehavior, Column, \
+    CrossAxisAlignment
 
 
 class ImgList(UserControl):
@@ -22,6 +24,7 @@ class ImgList(UserControl):
                 color=colors.TEAL,
                 text_align=TextAlign.CENTER
             ),
+            width=200,
             behavior=SnackBarBehavior.FLOATING,
             bgcolor=colors.WHITE,
             duration=2000,
@@ -31,8 +34,8 @@ class ImgList(UserControl):
     def build(self):
         # 导航栏容器
         self.view = Container(
-            width=950,
-            height=500,
+            width=5000,
+            height=5000,
             # bgcolor="#FFCC0000",
             margin=margin.only(top=20),
             border=border.all(1, colors.BLACK),
@@ -59,24 +62,47 @@ class ImgList(UserControl):
         # 滚动条移动到最上方
         self.img_list_Row.current.scroll_to(offset=0, duration=500)
         for path in similar_img_list:
+            filename = os.path.basename(path)
+            filename_without_extension = os.path.splitext(filename)[0]
             self.img_list_Row.current.controls.append(
                 Container(
-                    on_click=self.copy_path,
-                    content=Image(
-                        tooltip=path,
-                        src=path,
-                        width=200,
-                        height=150,
-                        fit=ImageFit.CONTAIN,
-                        repeat=ImageRepeat.NO_REPEAT,
-                        border_radius=border_radius.all(10),
-                    )
+                    # on_click=self.copy_path,
+                    # on_long_press=self.open_local_file,
+                    content=Column(
+                        expand=True,
+                        horizontal_alignment=CrossAxisAlignment.CENTER,
+                        controls=[
+                            Container(
+                                on_click=self.open_local_file,
+                                content=Image(
+                                    tooltip=path,
+                                    src=path,
+                                    # width=200,
+                                    height=150,
+                                    fit=ImageFit.CONTAIN,
+                                    repeat=ImageRepeat.NO_REPEAT,
+                                    border_radius=border_radius.all(10),
+                                )
+                            ),
+                            Container(
+                                on_click=self.copy_path,
+                                content=Text(
+                                    value=filename_without_extension
+                                )
+                            )
+
+                        ]
+                    ),
+
                 )
             )
             self.update()
 
     # 点击图片复制图片路径到剪贴板
     def copy_path(self, e: ControlEvent):
-        self.page.set_clipboard(e.control.content.src)
+        self.page.set_clipboard(e.control.content.value)
         self.page.snack_bar.open = True
         self.page.update()
+
+    def open_local_file(self, e: ControlEvent):
+        os.startfile(e.control.content.src)

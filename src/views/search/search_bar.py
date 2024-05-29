@@ -33,7 +33,7 @@ class SearchBar(UserControl):
         # 搜索栏容器
         self.view = Container(
             # border=border.all(1, colors.BLACK),
-            padding=padding.symmetric(0, 50),
+            # padding=padding.symmetric(0, 50),
             content=Row(
                 # 水平居中对齐
                 alignment=MainAxisAlignment.SPACE_BETWEEN,
@@ -106,6 +106,6 @@ class SearchBar(UserControl):
     def search_image(self):
         self.search_button.current.disabled = True
         self.update()
-        self.app_layout.search_image(self.file_path_text.current.value)
+        self.app_layout.search_image(self.file_path_text.current.value.strip('"'))
         self.search_button.current.disabled = False
         self.update()
