@@ -1,7 +1,6 @@
 anyio==3.7.1
 arrow==1.2.3
 binaryornot==0.4.4
-certifi @ file:///C:/b/abs_85o_6fm0se/croot/certifi_1671487778835/work/certifi
 chardet==5.2.0
 charset-normalizer==3.3.2
 click==8.1.7

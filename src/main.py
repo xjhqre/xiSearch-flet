@@ -1,6 +1,11 @@
 import os
 import sys
 
+# 将项目根目录添加到sys.path，确保src模块可以被正确导入
+project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if project_root not in sys.path:
+    sys.path.insert(0, project_root)
+
 if sys.stdout is None:
     sys.stdout = open(os.devnull, "w")
 if sys.stderr is None:
