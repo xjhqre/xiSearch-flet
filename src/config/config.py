@@ -10,27 +10,37 @@ project_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../'
 # 模型路径
 model_path = os.path.join(project_path, 'model', 'sentence-transformers_clip-ViT-B-32')
 
-configFile = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../config.ini')
+config_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../config.ini')
 # 创建配置文件对象
 config = configparser.ConfigParser()
 # 读取文件
-config.read(configFile, encoding='utf-8')
+config.read(config_file, encoding='utf-8')
 
 
 def _update_config(option: str, value: str):
-    config.read(configFile, encoding='utf-8')
     if not config.has_section("SETTINGS"):
         config.add_section("SETTINGS")
     config.set("SETTINGS", option, value)
-    with open(configFile, 'w', encoding='utf-8') as configfile:
-        config.write(configfile)
+    with open(config_file, 'w', encoding='utf-8') as cf:
+        config.write(cf)
 
 
 class Config:
+    _instance = None
+
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+        return cls._instance
+
     def __init__(self):
+        if hasattr(self, '_initialized'):
+            return
+        self._initialized = True
+
         self._file_path: str = ""  # 搜索图片路径
         self._gallery_path = config.get("SETTINGS", "gallery_path")  # 图片库地址
-        self._contains_sub_directories = config.get("SETTINGS", "contains_sub_directories")  # 图片库地址
+        self._contains_sub_directories = config.get("SETTINGS", "contains_sub_directories")  # 是否包含子目录
 
         self._feature_path = config.get("SETTINGS", "feature_path")  # 特征向量存储目录，默认为feature目录
         self._allow_types = [".jpg", ".jpeg", ".gif", ".png", ".JPG", ".JPEG", ".GIF", ".PNG"]  # 允许的图片类型
@@ -48,8 +58,8 @@ class Config:
         return self._gallery_path
 
     def set_gallery_path(self, gallery_path):
-        if gallery_path[-1] != "/" and gallery_path[-1] != "\\":
-            gallery_path += '\\'
+        if not gallery_path.endswith(os.sep):
+            gallery_path += os.sep
         self._gallery_path = gallery_path
         # 修改配置文件
         _update_config("gallery_path", gallery_path)

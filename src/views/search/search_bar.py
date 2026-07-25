@@ -2,38 +2,28 @@
 搜索栏
 """
 
-from flet_core import UserControl, Container, Row, MainAxisAlignment, CrossAxisAlignment, FilePicker, \
+from flet_core import Container, Row, MainAxisAlignment, CrossAxisAlignment, FilePicker, \
     FilePickerResultEvent, icons, RoundedRectangleBorder, ButtonStyle, Ref, TextField, padding, margin, ElevatedButton, \
     Alignment
 
 from src.config.config import config_instance
 
 
-class SearchBar(UserControl):
+class SearchBar(Container):
 
     def __init__(self, ref, page, app_layout):
-        super().__init__(ref=ref)
         self.app_layout = app_layout
-        self.view = None
         self.page = page
-
-        # 输入文本框引用
         self.file_path_text = Ref[TextField]()
 
         # 选择文件对话框
         self.pick_files_dialog = FilePicker(on_result=self.pick_files_result)
         page.overlay.extend([self.pick_files_dialog])
-
-        # 搜索按钮
         self.search_button = Ref[ElevatedButton]()
-        # 文件选择按钮
         self.file_select_button = Ref[ElevatedButton]()
 
-    def build(self):
-        # 搜索栏容器
-        self.view = Container(
-            # border=border.all(1, colors.BLACK),
-            # padding=padding.symmetric(0, 50),
+        super().__init__(
+            ref=ref,
             content=Row(
                 # 水平居中对齐
                 alignment=MainAxisAlignment.SPACE_BETWEEN,
@@ -55,7 +45,6 @@ class SearchBar(UserControl):
                             # 保存输入数据
                             on_change=lambda e: config_instance.set_file_path(e.control.value)
                         ),
-
                     ),
                     Row(
                         spacing=20,
@@ -91,7 +80,6 @@ class SearchBar(UserControl):
                 ]
             ),
         )
-        return self.view
 
     # 文件选择结果回调
     def pick_files_result(self, e: FilePickerResultEvent):
@@ -106,6 +94,12 @@ class SearchBar(UserControl):
     def search_image(self):
         self.search_button.current.disabled = True
         self.update()
-        self.app_layout.search_image(self.file_path_text.current.value.strip('"'))
-        self.search_button.current.disabled = False
-        self.update()
+
+        def on_search_complete(success):
+            self.search_button.current.disabled = False
+            self.update()
+
+        self.app_layout.search_image(
+            self.file_path_text.current.value.strip('"'),
+            on_complete=on_search_complete
+        )

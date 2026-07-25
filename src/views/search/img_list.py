@@ -3,55 +3,59 @@
 """
 import os
 
-from flet_core import UserControl, Row, Image, ImageFit, ImageRepeat, border_radius, Container, Ref, padding, \
+from flet_core import Row, Image, ImageFit, ImageRepeat, border_radius, Container, Ref, padding, \
     ScrollMode, border, colors, margin, ControlEvent, SnackBar, Text, TextAlign, SnackBarBehavior, Column, \
     CrossAxisAlignment
 
+from src.constants.layout_constant import (
+    IMG_DISPLAY_BATCH_SIZE,
+    IMG_LIST_CONTAINER_WIDTH,
+    IMG_LIST_CONTAINER_HEIGHT,
+    IMG_LIST_BORDER_RADIUS,
+    IMG_LIST_MARGIN_TOP,
+    IMG_LIST_PADDING_VERTICAL,
+    IMG_LIST_PADDING_HORIZONTAL,
+    IMG_THUMB_HEIGHT,
+    SNACK_BAR_WIDTH,
+    SNACK_BAR_DURATION,
+    SNACK_BAR_MARGIN_BOTTOM,
+    SNACK_BAR_MARGIN_LEFT,
+    SNACK_BAR_MARGIN_RIGHT,
+)
 
-class ImgList(UserControl):
+
+class ImgList(Container):
 
     def __init__(self, ref, page, app_layout):
-        super().__init__(ref=ref)
         self.app_layout = app_layout
-        self.view = None
-        self.expand = True
         self.page = page
         self.img_list_Row = Ref[Row]()
 
         self.page.snack_bar = SnackBar(
-            Text(
-                value="复制成功!",
-                color=colors.TEAL,
-                text_align=TextAlign.CENTER
-            ),
-            width=200,
+            Text(value="复制成功!", color=colors.TEAL, text_align=TextAlign.CENTER),
+            width=SNACK_BAR_WIDTH,
             behavior=SnackBarBehavior.FLOATING,
             bgcolor=colors.WHITE,
-            duration=2000,
-            margin=margin.only(bottom=30, left=1100, right=30),
+            duration=SNACK_BAR_DURATION,
+            margin=margin.only(bottom=SNACK_BAR_MARGIN_BOTTOM, left=SNACK_BAR_MARGIN_LEFT, right=SNACK_BAR_MARGIN_RIGHT),
         )
 
-    def build(self):
-        # 导航栏容器
-        self.view = Container(
-            width=5000,
-            height=5000,
-            # bgcolor="#FFCC0000",
-            margin=margin.only(top=20),
+        super().__init__(
+            ref=ref,
+            width=IMG_LIST_CONTAINER_WIDTH,
+            height=IMG_LIST_CONTAINER_HEIGHT,
+            margin=margin.only(top=IMG_LIST_MARGIN_TOP),
             border=border.all(1, colors.BLACK),
-            border_radius=5,
-            padding=padding.symmetric(20, 50),
-            # padding=padding.only(20, right=20, top=20, bottom=20),
+            border_radius=IMG_LIST_BORDER_RADIUS,
+            padding=padding.symmetric(IMG_LIST_PADDING_VERTICAL, IMG_LIST_PADDING_HORIZONTAL),
             expand=True,
             content=Row(
                 ref=self.img_list_Row,
                 wrap=True,
-                # auto_scroll=True,  # 自动滑动到底部
                 scroll=ScrollMode.AUTO,
                 expand=True,
             )
         )
-        return self.view
 
     # 展示图片列表
     def show_result_image(self, similar_img_list):
@@ -61,42 +65,41 @@ class ImgList(UserControl):
         self.img_list_Row.current.clean()
         # 滚动条移动到最上方
         self.img_list_Row.current.scroll_to(offset=0, duration=500)
-        for path in similar_img_list:
-            filename = os.path.basename(path)
-            filename_without_extension = os.path.splitext(filename)[0]
-            self.img_list_Row.current.controls.append(
-                Container(
-                    # on_click=self.copy_path,
-                    # on_long_press=self.open_local_file,
-                    content=Column(
-                        expand=True,
-                        horizontal_alignment=CrossAxisAlignment.CENTER,
-                        controls=[
-                            Container(
-                                on_click=self.open_local_file,
-                                content=Image(
-                                    tooltip=path,
-                                    src=path,
-                                    # width=200,
-                                    height=150,
-                                    fit=ImageFit.CONTAIN,
-                                    repeat=ImageRepeat.NO_REPEAT,
-                                    border_radius=border_radius.all(10),
-                                )
-                            ),
-                            Container(
-                                on_click=self.copy_path,
-                                content=Text(
-                                    value=filename_without_extension
-                                )
-                            )
 
-                        ]
-                    ),
-
-                )
-            )
+        for i in range(0, len(similar_img_list), IMG_DISPLAY_BATCH_SIZE):
+            batch = similar_img_list[i:i + IMG_DISPLAY_BATCH_SIZE]
+            for path in batch:
+                self.img_list_Row.current.controls.append(self._build_image_control(path))
             self.update()
+
+    def _build_image_control(self, path):
+        filename = os.path.basename(path)
+        filename_without_extension = os.path.splitext(filename)[0]
+        return Container(
+            content=Column(
+                expand=True,
+                horizontal_alignment=CrossAxisAlignment.CENTER,
+                controls=[
+                    Container(
+                        on_click=self.open_local_file,
+                        content=Image(
+                            tooltip=path,
+                            src=path,
+                            height=IMG_THUMB_HEIGHT,
+                            fit=ImageFit.CONTAIN,
+                            repeat=ImageRepeat.NO_REPEAT,
+                            border_radius=border_radius.all(10),
+                        )
+                    ),
+                    Container(
+                        on_click=self.copy_path,
+                        content=Text(
+                            value=filename_without_extension
+                        )
+                    )
+                ]
+            ),
+        )
 
     # 点击图片复制图片路径到剪贴板
     def copy_path(self, e: ControlEvent):

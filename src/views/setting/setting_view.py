@@ -2,29 +2,21 @@
 设置视图
 """
 
-from flet_core import UserControl, Row, Container, padding, \
-    Column, MainAxisAlignment, KeyboardType
+from flet_core import Row, Container, padding, Column, MainAxisAlignment, KeyboardType
 
 from src.config.config import config_instance
-from src.enum.setting_type import SettingType
+from src.enums.setting_type import SettingType
 from src.views.setting.radio_item import RadioItem
 from src.views.setting.setting_item import SettingItem
 
 
-class SettingView(UserControl):
+class SettingView(Container):
 
     def __init__(self, page, app_layout):
-        super().__init__()
         self.app_layout = app_layout
-        self.view = None
-        self.expand = True
         self.page = page
 
-    def build(self):
-        # 导航栏容器
-        self.view = Container(
-            # width=950,
-            # height=500,
+        super().__init__(
             padding=padding.symmetric(20, 50),
             expand=True,
             content=Column(
@@ -34,14 +26,14 @@ class SettingView(UserControl):
                         alignment=MainAxisAlignment.START,
                         controls=[
                             SettingItem("特征文件保存地址: ", config_instance.get_feature_path(),
-                                        SettingType.FEATURE_PATH),
+                                        SettingType.FEATURE_PATH, self.page),
                         ]
                     ),
                     Row(
                         alignment=MainAxisAlignment.START,
                         controls=[
                             SettingItem("搜索相似图片数量: ", config_instance.get_result_count(),
-                                        SettingType.RESULT_COUNT, KeyboardType.NUMBER, 80, False)
+                                        SettingType.RESULT_COUNT, self.page, KeyboardType.NUMBER, 80, False)
                         ]
                     ),
                     Row(
@@ -53,4 +45,3 @@ class SettingView(UserControl):
                 ]
             )
         )
-        return self.view
